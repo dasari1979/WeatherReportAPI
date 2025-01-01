@@ -60,6 +60,6 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = WeatherAPIKeyNotFoundException.class)
     public ResponseEntity<String> handleInvalidDataException(WeatherAPIKeyNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please provide API KEY from https://api.openweathermap.org/ " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please provide API KEY from https://api.openweathermap.org/");
     }
 }

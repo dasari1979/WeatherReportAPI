@@ -38,7 +38,7 @@ public class CountryCodes {
         // for our application streams to be read
         BufferedReader br = new BufferedReader(new InputStreamReader(urlconnect.getInputStream()));
         // Declaring an integer variable
-        String readAPIResponse = " ";
+        String readAPIResponse = "";
         StringBuilder builder = new StringBuilder();
         // Till the time URL is being read
         while ((readAPIResponse = br.readLine()) != null) {
@@ -48,7 +48,7 @@ public class CountryCodes {
         String cuntryName = "";
         for (int i =0;i<jsonArray.length();i++) {
         	if(jsonArray.getJSONObject(i).isNull(UserDefinedVariables.POSTOFFICE))
-            throw new NullPointerException("OR server down");
+            throw new NullPointerException("OR Server down");
         	
         	JSONArray jsonObj = jsonArray.getJSONObject(i).getJSONArray(UserDefinedVariables.POSTOFFICE);	
         	if(jsonObj.getJSONObject(i) instanceof JSONObject) {

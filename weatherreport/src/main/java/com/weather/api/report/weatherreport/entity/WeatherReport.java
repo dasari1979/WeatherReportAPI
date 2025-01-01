@@ -49,12 +49,10 @@ public class WeatherReport {
     @NotNull(message = "user should not be null")
     @NotEmpty(message = "user should not be empty")
     private String user;
-    @Column(name = "POSTALCODE",length = 6)
-    @Pattern(regexp = "^[a-zA-Z]", message = "Invalid postalCode,alphabets are available")
-    @Pattern(regexp = "^[0]{1}$", message = "Invalid postalCode")
-    @Pattern(regexp = "^\\d{6}$", message = "Invalid postalCode,should be six numbers")
     @NotNull(message = "postalCode should not be null")
     @NotEmpty(message = "postalCode should not be empty")
+    @Column(name = "POSTALCODE",length = 6)
+    @Pattern(regexp = "^[1-9]{1}[0-9]{2}\\s{0,1}[0-9]{3}$", message = "Invalid postalCode")
 	private String postalCode;
     @Column(name = "TEMPERATURE")
 	private double temperature;
