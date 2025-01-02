@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class WeatherreportApplicationTests {
 	
 	
 	@Test
-	public void saveStudentsTest() {
+	public void saveWeatherReportTest() {
 		
 		WeatherReport weatherReport = new WeatherReport();
 		weatherReport.setId(34);
@@ -41,7 +41,7 @@ public class WeatherreportApplicationTests {
 		weatherReport.setTempMin(25.22);
 		weatherReport.setUser("Max");
 		weatherReport.setWeather("Clouds");
-		weatherReport.setWeatherDesc("clear sky");
+		weatherReport.setWeatherDesc("Clear sky");
         
 		weatherReportRepository.save(weatherReport);
 		logger.info(" Saved...");
@@ -50,12 +50,13 @@ public class WeatherreportApplicationTests {
 	}
 	
 	@Test
-	public void getAllStudents() {
+	public void getAllWeatherReport() {
 		
 		List<WeatherReport> totalReport = weatherReportRepository.findAll();
 		totalReport.stream().forEach(report -> {
 			logger.info("Report details "+report.getName()+" "+report.getPostalCode()+" "+report.getTemperature()+" "+report.getHumidity());
-		});		// Checking
+		});		
+		// Checking
 		Assertions.assertThat(totalReport.stream().findAny().get().getUser()).isEqualTo("Max");
 	}
 }

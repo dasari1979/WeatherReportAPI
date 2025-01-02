@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,13 +40,14 @@ public class WeatherReportController {
 	/**
 	 * This method is called when a POST request is made
 	 * URL: http://localhost:9090/app/weather
-     * Purpose: Save an WeatherReport entity
+     * Purpose: save an WeatherReport entity
      * @param postalCode - Request body is an WeatherReport entity
 	 * @param user - - Request body is an WeatherReport entity
      * @return Saved WeatherReport entity
 	 * @throws ResourceNotFoundException 
 	 */
 	@GetMapping("/history")
+	@Cacheable(value="WeatherReport")
 	public ResponseEntity<List<WeatherReport>> fetchWeatherDataByPostalCode(@RequestParam(name = "postalcode",required = false) String postalCode,@RequestParam(name = "user",required = false) String user) throws ResourceNotFoundException {
 		logger.info("Fetching weather history for "+postalCode+" postalcode");
 		List<WeatherReport> records = weatherReportService.findBypostalCodeOruser(postalCode,user);
