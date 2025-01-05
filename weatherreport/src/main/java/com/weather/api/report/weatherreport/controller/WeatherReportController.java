@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.weather.api.report.weatherreport.entity.WeatherReport;
+import com.weather.api.report.weatherreport.exceptions.InvalidAPIKeyException;
 import com.weather.api.report.weatherreport.exceptions.ResourceNotFoundException;
 import com.weather.api.report.weatherreport.exceptions.WeatherAPIKeyNotFoundException;
 import com.weather.api.report.weatherreport.exceptions.WeatherNotFoundException;
@@ -65,10 +66,11 @@ public class WeatherReportController {
 	 * @throws IOException
 	 * @throws JSONException
 	 * @throws WeatherAPIKeyNotFoundException 
+	 * @throws InvalidAPIKeyException 
 	 * @throws ResourceNotFoundException 
 	 */
 	@PostMapping("/weather")
-	public ResponseEntity<WeatherReport> saveWeatherData(@RequestBody @Valid WeatherReport weatherReport) throws WeatherNotFoundException, JSONException, IOException, WeatherAPIKeyNotFoundException{
+	public ResponseEntity<WeatherReport> saveWeatherData(@RequestBody @Valid WeatherReport weatherReport) throws WeatherNotFoundException, JSONException, IOException, WeatherAPIKeyNotFoundException, InvalidAPIKeyException{
 		    logger.info("Inserting weather data...");
 		    WeatherReport report = weatherReportService.saveWeatherData(weatherReport);
 		    if(report.getTemperature()!=0)

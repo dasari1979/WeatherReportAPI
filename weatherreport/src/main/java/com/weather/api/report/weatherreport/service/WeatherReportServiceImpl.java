@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.weather.api.report.weatherreport.countrycodes.CountryCodes;
 import com.weather.api.report.weatherreport.entity.WeatherReport;
+import com.weather.api.report.weatherreport.exceptions.InvalidAPIKeyException;
 import com.weather.api.report.weatherreport.exceptions.ResourceNotFoundException;
 import com.weather.api.report.weatherreport.exceptions.WeatherAPIKeyNotFoundException;
 import com.weather.api.report.weatherreport.exceptions.WeatherNotFoundException;
@@ -55,7 +56,7 @@ public class WeatherReportServiceImpl implements WeatherReportService{
 	}
 
 	@Override
-	public WeatherReport saveWeatherData(WeatherReport weatherReport) throws JSONException, IOException, WeatherAPIKeyNotFoundException, WeatherNotFoundException   {
+	public WeatherReport saveWeatherData(WeatherReport weatherReport) throws JSONException, IOException, WeatherAPIKeyNotFoundException, WeatherNotFoundException, InvalidAPIKeyException   {
 
 			String pinCode = String.valueOf(weatherReport.getPostalCode());
 			String countryCode = findCountryCode(pinCode);
@@ -108,12 +109,12 @@ public class WeatherReportServiceImpl implements WeatherReportService{
 
 
 	@Override
-	public String getWeatherDataCity(String pinCode, String countryCode) throws IOException, WeatherAPIKeyNotFoundException {
+	public String getWeatherDataCity(String pinCode, String countryCode) throws IOException, WeatherAPIKeyNotFoundException, InvalidAPIKeyException {
 
 		return connectAPICity(pinCode, countryCode);
 	}
 	
-	private String connectAPICity(String zipCode, String countryCode) throws IOException, WeatherAPIKeyNotFoundException {
+	private String connectAPICity(String zipCode, String countryCode) throws IOException, WeatherAPIKeyNotFoundException, InvalidAPIKeyException {
 		
 		if(apikey.isEmpty())
 		throw new WeatherAPIKeyNotFoundException("API KEY Not found");
@@ -128,12 +129,14 @@ public class WeatherReportServiceImpl implements WeatherReportService{
 		return getResponse(client, request);
 		
 	}
-	private String getResponse(OkHttpClient client, Request request) throws IOException {
+	private String getResponse(OkHttpClient client, Request request) throws IOException, InvalidAPIKeyException {
 		
 		Response response = client.newCall(request).execute();
 		
 		String responseBody = response.body().string();
-		
+
+		if(!response.isSuccessful() || responseBody.contains("Invalid API key") || response.code() == 401)
+		throw new InvalidAPIKeyException("Invalid API key or Bad Request");
 		return responseBody;
 		
 	}
