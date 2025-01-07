@@ -82,11 +82,13 @@ public class WeatherReportController {
 	@GetMapping("/history")
 	@Cacheable(value="WeatherReport")
 	public String fetchWeatherDataByPostalCodeORUser(@RequestParam(name = "postalcode",required = false) String postalCode,@RequestParam(name = "user",required = false) String user,Model model) throws ResourceNotFoundException {
-		logger.info("Fetching weather history for "+postalCode+" postalcode");
-		List<WeatherReport> records = weatherReportService.findBypostalCodeOruser(postalCode,user);
 		
+		logger.info("Fetching weather history for "+postalCode+" postalcode");
+		List<WeatherReport> records = weatherReportService.findBypostalCodeOruser(postalCode,user);	
 		model.addAttribute("weatherReport", records);
 		logger.info(records+"records for "+postalCode);
+		if(records.isEmpty())
+			model.addAttribute("weatherReport", postalCode);
 		if(!records.isEmpty())
 		return "history";
 		else
