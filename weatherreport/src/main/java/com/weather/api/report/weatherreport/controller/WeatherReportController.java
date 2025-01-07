@@ -12,12 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.weather.api.report.weatherreport.entity.WeatherReport;
 import com.weather.api.report.weatherreport.exceptions.InvalidAPIKeyException;
@@ -28,7 +29,7 @@ import com.weather.api.report.weatherreport.service.WeatherReportService;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RestController
+@Controller
 @RequestMapping("/app")
 @Slf4j
 public class WeatherReportController {
@@ -47,7 +48,7 @@ public class WeatherReportController {
      * @return Saved WeatherReport entity
 	 * @throws ResourceNotFoundException 
 	 */
-	@GetMapping("/history")
+	@GetMapping("/history/data")
 	@Cacheable(value="WeatherReport")
 	public ResponseEntity<List<WeatherReport>> fetchWeatherDataByPostalCode(@RequestParam(name = "postalcode",required = false) String postalCode,@RequestParam(name = "user",required = false) String user) throws ResourceNotFoundException {
 		logger.info("Fetching weather history for "+postalCode+" postalcode");
@@ -57,6 +58,39 @@ public class WeatherReportController {
 		else
 		return ResponseEntity.status(HttpStatus.NO_CONTENT) 
                 .body(records);
+	}
+	/**
+	 * This method is called when a POST request is made
+	 * URL: http://localhost:9090/app/weather
+     * Purpose: save an WeatherReport entity
+     * @param postalCode - Request body is an WeatherReport entity
+	 * @param user - Request body is an WeatherReport entity
+	 * @param model 
+     * @return Saved WeatherReport entity
+	 * @throws ResourceNotFoundException 
+	 */
+	/**
+	 * This method is called when a GET request is made
+	 * URL: http://localhost:8000/app/history
+	 * Purpose: Fetch the weather report based on postalCode or user
+	 * @param postalCode Request body is an WeatherReport entity
+	 * @param user Request body is an WeatherReport entity
+	 * @param model contains the data of the application
+	 * @return Fetch weather data to html
+	 * @throws ResourceNotFoundException
+	 */
+	@GetMapping("/history")
+	@Cacheable(value="WeatherReport")
+	public String fetchWeatherDataByPostalCodeORUser(@RequestParam(name = "postalcode",required = false) String postalCode,@RequestParam(name = "user",required = false) String user,Model model) throws ResourceNotFoundException {
+		logger.info("Fetching weather history for "+postalCode+" postalcode");
+		List<WeatherReport> records = weatherReportService.findBypostalCodeOruser(postalCode,user);
+		
+		model.addAttribute("weatherReport", records);
+		logger.info(records+"records for "+postalCode);
+		if(!records.isEmpty())
+		return "history";
+		else
+		return "error";
 	}
 	
 	/**
@@ -70,7 +104,7 @@ public class WeatherReportController {
 	 * @throws ResourceNotFoundException 
 	 */
 	@PostMapping("/weather")
-	public ResponseEntity<WeatherReport> saveWeatherData(@RequestBody @Valid WeatherReport weatherReport) throws WeatherNotFoundException, JSONException, IOException, WeatherAPIKeyNotFoundException, InvalidAPIKeyException{
+	public ResponseEntity<WeatherReport> saveWeatherData(@RequestBody @Valid WeatherReport weatherReport) throws WeatherNotFoundException, JSONException, IOException, WeatherAPIKeyNotFoundException, InvalidAPIKeyException, ResourceNotFoundException{
 		    logger.info("Inserting weather data...");
 		    WeatherReport report = weatherReportService.saveWeatherData(weatherReport);
 		    if(report.getTemperature()!=0)

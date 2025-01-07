@@ -15,7 +15,7 @@ public interface WeatherReportService {
 
 	List<WeatherReport> fetchWheatherData();
 	String getWeatherDataCity(String city, String country) throws IOException,WeatherAPIKeyNotFoundException, InvalidAPIKeyException;
-	WeatherReport saveWeatherData(WeatherReport weatherReport) throws WeatherNotFoundException, JSONException, IOException, WeatherAPIKeyNotFoundException, InvalidAPIKeyException;
-	String findCountryCode(String postalCode) throws IOException, JSONException;
+	WeatherReport saveWeatherData(WeatherReport weatherReport) throws WeatherNotFoundException, JSONException, IOException, WeatherAPIKeyNotFoundException, InvalidAPIKeyException, ResourceNotFoundException;
+	String findCountryCode(String postalCode) throws IOException, JSONException, ResourceNotFoundException;
 	List<WeatherReport> findBypostalCodeOruser(String postalCode,String max) throws ResourceNotFoundException;
 }

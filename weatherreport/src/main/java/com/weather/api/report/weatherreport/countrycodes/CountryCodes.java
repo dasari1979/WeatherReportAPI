@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.weather.api.report.weatherreport.exceptions.ResourceNotFoundException;
 import com.weather.api.report.weatherreport.util.UserDefinedVariables;
 
 public class CountryCodes {
@@ -29,14 +30,17 @@ public class CountryCodes {
 
 	}
 	
-	public String getCountyName(String zipCode) throws IOException, JSONException {
-
+	public String getCountyName(String zipCode) throws JSONException, IOException, ResourceNotFoundException {
+        String cuntryName = "";
+        BufferedReader br = null;
+        JSONObject jsonValue = null;
+        try {
 		// Creating an object of URL class
-        URL u = new URL("https://api.postalpincode.in/pincode/"+zipCode);
+        URL url = new URL("https://api.postalpincode.in/pincode/"+zipCode);
         // communicate between application and URL
-        URLConnection urlconnect = u.openConnection();
+        URLConnection urlconnect = url.openConnection();
         // for our application streams to be read
-        BufferedReader br = new BufferedReader(new InputStreamReader(urlconnect.getInputStream()));
+        br = new BufferedReader(new InputStreamReader(urlconnect.getInputStream()));
         // Declaring an integer variable
         String readAPIResponse = "";
         StringBuilder builder = new StringBuilder();
@@ -45,10 +49,10 @@ public class CountryCodes {
         	builder.append(readAPIResponse);
         }
         JSONArray jsonArray = new JSONArray(builder.toString().trim());
-        String cuntryName = "";
         for (int i =0;i<jsonArray.length();i++) {
+        	jsonValue = jsonArray.getJSONObject(i);
         	if(jsonArray.getJSONObject(i).isNull(UserDefinedVariables.POSTOFFICE))
-            throw new NullPointerException("OR Server down");
+            throw new NullPointerException("OR Not able to find PostOffice Name for "+zipCode);
         	
         	JSONArray jsonObj = jsonArray.getJSONObject(i).getJSONArray(UserDefinedVariables.POSTOFFICE);	
         	if(jsonObj.getJSONObject(i) instanceof JSONObject) {
@@ -57,14 +61,25 @@ public class CountryCodes {
 	        	cuntryName = arrayOfJson.get(UserDefinedVariables.COUNTRY).toString();
 	        	break;
               }
-        }
+         }
+        }catch (IOException e) {
+			if(br == null)
+				throw new ResourceNotFoundException("Not able fetch data for "+zipCode);
+		}finally {
+			if(br != null)
+				br.close();
+        	if(jsonValue == null || jsonValue.isNull(UserDefinedVariables.POSTOFFICE))
+                throw new NullPointerException("OR Not able to find PostOffice Name for "+zipCode);
+		}
+
+
 		return cuntryName;
 	}
 	public String getCountryCode(String countryName) {
 		
 	String country = countryCodes.entrySet().stream().filter(name->name.getKey().equalsIgnoreCase(countryName)).findAny().get().getValue();
 	if(country.isEmpty() || country == null)
-        throw new NullPointerException("OR server down");
+        throw new NullPointerException("OR Not able to find Country Code");
 	return country;
 		
 	}

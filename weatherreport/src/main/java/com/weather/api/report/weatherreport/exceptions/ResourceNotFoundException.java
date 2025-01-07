@@ -10,4 +10,7 @@ public class ResourceNotFoundException extends Exception {
 	public ResourceNotFoundException(String message, HttpStatus badRequest) {
         super(message);
     }
+	public ResourceNotFoundException(String message) {
+        super(message);
+    }
 }

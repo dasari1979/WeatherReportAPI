@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(value = NullPointerException.class)
 	public ResponseEntity<String> handleNullPointerException(NullPointerException ex) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Input " + ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Input OR Not able to find Pincode " + ex.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
