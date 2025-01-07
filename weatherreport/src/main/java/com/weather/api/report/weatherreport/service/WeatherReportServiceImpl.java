@@ -87,6 +87,7 @@ public class WeatherReportServiceImpl implements WeatherReportService{
 		weatherReport.setTempMin(tempMin);
 		weatherReport.setWeather(weather);
 		weatherReport.setWeatherDesc(weatherDesc);
+		weatherReport.setActive(true);
 		
 		return weatherReport;
 

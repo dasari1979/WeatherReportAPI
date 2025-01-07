@@ -71,6 +71,15 @@ public class WeatherReport {
     @CreationTimestamp
     @Column(updatable = false, name = "CREATED_AT")
     private Date createdAt;
+    @Column(name = "ACTIVE")
+    private boolean isActive = false;
+
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
 	public String getUser() {
 		return user;
 	}
