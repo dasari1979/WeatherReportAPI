@@ -49,9 +49,6 @@ public class WeatherReportServiceImpl implements WeatherReportService{
 		records = weatherReportRepository.findBypostalCode(postalCode);
 		else if(max != null)
 		records = weatherReportRepository.findBymax(max);
-		
-		if(records.isEmpty())
-			throw new ResourceNotFoundException("Record is not available",HttpStatus.NO_CONTENT);
 		return records;
 	}
 
