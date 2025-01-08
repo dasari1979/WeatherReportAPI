@@ -35,7 +35,13 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(value = NullPointerException.class)
 	public ResponseEntity<String> handleNullPointerException(NullPointerException ex) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Input OR Not able to find Pincode " + ex.getMessage());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad Input OR Not able to find Record OR User not found");
+	}
+	
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(value = PostalCodeNotFoundException.class)
+	public ResponseEntity<String> handlePostalCodNotFound(PostalCodeNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please provide valid PostalCode...");
 	}
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

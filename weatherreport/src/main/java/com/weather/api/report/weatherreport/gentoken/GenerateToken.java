@@ -34,7 +34,7 @@ public class GenerateToken {
 			Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
 			return JWT.require(algorithm).build().verify(token).getSubject();
 		} catch (JWTVerificationException exception) {
-			throw new JWTVerificationException("Error while validating token", exception);
+			throw new JWTVerificationException("Error while validating token Or Token Expired", exception);
 		}
 	}
 

@@ -20,16 +20,16 @@ import com.weather.api.report.weatherreport.filter.AuthenticationSecurityFilter;
 @EnableWebSecurity
 public class AuthenticationConfig {
 
-	@Autowired(required=true)
+	@Autowired(required = true)
 	AuthenticationSecurityFilter securityFilter;
+
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		return httpSecurity.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(authorize -> authorize.antMatchers(HttpMethod.POST, "/app/auth/*").permitAll()
-						.antMatchers(HttpMethod.POST, "/app/*").authenticated()
-						.antMatchers(HttpMethod.GET, "/app/*").permitAll()
-				        .anyRequest().authenticated())
+						.antMatchers(HttpMethod.POST, "/app/*").authenticated().antMatchers(HttpMethod.GET, "/app/*")
+						.permitAll().anyRequest().authenticated())
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class).build();
 	}
 

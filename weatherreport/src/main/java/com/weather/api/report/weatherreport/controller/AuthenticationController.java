@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.weather.api.report.weatherreport.dtos.LoginData;
 import com.weather.api.report.weatherreport.dtos.RegisterUser;
 import com.weather.api.report.weatherreport.entity.UserCredentials;
+import com.weather.api.report.weatherreport.exceptions.InvalidDataException;
 import com.weather.api.report.weatherreport.gentoken.GenerateToken;
 import com.weather.api.report.weatherreport.service.AuthenticationService;
 
@@ -42,13 +44,20 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<String> signIn(@RequestBody @Valid LoginData data) {
+	public ResponseEntity<String> signIn(@RequestBody @Valid LoginData data) throws InvalidDataException {
 		UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(data.getUsername(),
 				data.getPassword());
+		String accessToken = "";
+		try {
 		Authentication authUser = authenticationManager.authenticate(usernamePassword);
 		logger.info("User authenticated...");
-		String accessToken = generateToken.generateAccessToken((UserCredentials) authUser.getPrincipal());
+		accessToken = generateToken.generateAccessToken((UserCredentials) authUser.getPrincipal());
 		logger.info("Token Generated....");
+		if(accessToken.isEmpty())
+			throw new InvalidDataException("Token not generated and Gernerate Token");
+		}catch (AuthenticationException e) {
+			throw new InvalidDataException("Token is expired or Invalid Token or Gernerate Token");
+		}
 		return ResponseEntity.ok("Token Generated successfully " + accessToken);
 	}
 

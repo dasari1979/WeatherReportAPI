@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.weather.api.report.weatherreport.exceptions.PostalCodeNotFoundException;
 import com.weather.api.report.weatherreport.exceptions.ResourceNotFoundException;
 import com.weather.api.report.weatherreport.util.UserDefinedVariables;
 
@@ -30,7 +31,7 @@ public class CountryCodes {
 
 	}
 	
-	public String getCountyName(String zipCode) throws JSONException, IOException, ResourceNotFoundException {
+	public String getCountyName(String zipCode) throws JSONException, IOException, ResourceNotFoundException, PostalCodeNotFoundException {
         String cuntryName = "";
         BufferedReader br = null;
         JSONObject jsonValue = null;
@@ -52,7 +53,7 @@ public class CountryCodes {
         for (int i =0;i<jsonArray.length();i++) {
         	jsonValue = jsonArray.getJSONObject(i);
         	if(jsonArray.getJSONObject(i).isNull(UserDefinedVariables.POSTOFFICE))
-            throw new NullPointerException("OR Not able to find PostOffice Name for "+zipCode);
+            throw new PostalCodeNotFoundException("OR Not able to find PostOffice Name for "+zipCode);
         	
         	JSONArray jsonObj = jsonArray.getJSONObject(i).getJSONArray(UserDefinedVariables.POSTOFFICE);	
         	if(jsonObj.getJSONObject(i) instanceof JSONObject) {
@@ -69,7 +70,7 @@ public class CountryCodes {
 			if(br != null)
 				br.close();
         	if(jsonValue == null || jsonValue.isNull(UserDefinedVariables.POSTOFFICE))
-                throw new NullPointerException("OR Not able to find PostOffice Name for "+zipCode);
+                throw new PostalCodeNotFoundException("OR Not able to find PostOffice Name for "+zipCode);
 		}
 
 

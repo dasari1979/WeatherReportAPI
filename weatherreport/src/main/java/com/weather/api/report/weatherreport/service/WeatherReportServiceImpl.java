@@ -8,12 +8,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.weather.api.report.weatherreport.countrycodes.CountryCodes;
 import com.weather.api.report.weatherreport.entity.WeatherReport;
 import com.weather.api.report.weatherreport.exceptions.InvalidAPIKeyException;
+import com.weather.api.report.weatherreport.exceptions.PostalCodeNotFoundException;
 import com.weather.api.report.weatherreport.exceptions.ResourceNotFoundException;
 import com.weather.api.report.weatherreport.exceptions.WeatherAPIKeyNotFoundException;
 import com.weather.api.report.weatherreport.exceptions.WeatherNotFoundException;
@@ -53,7 +53,7 @@ public class WeatherReportServiceImpl implements WeatherReportService{
 	}
 
 	@Override
-	public WeatherReport saveWeatherData(WeatherReport weatherReport) throws JSONException, IOException, WeatherAPIKeyNotFoundException, WeatherNotFoundException, InvalidAPIKeyException, ResourceNotFoundException   {
+	public WeatherReport saveWeatherData(WeatherReport weatherReport) throws JSONException, IOException, WeatherAPIKeyNotFoundException, WeatherNotFoundException, InvalidAPIKeyException, ResourceNotFoundException, PostalCodeNotFoundException   {
 
 			String pinCode = String.valueOf(weatherReport.getPostalCode());
 			String countryCode = findCountryCode(pinCode);
@@ -95,11 +95,11 @@ public class WeatherReportServiceImpl implements WeatherReportService{
 
 
 	@Override
-	public String findCountryCode(String postalCode) throws IOException, JSONException, ResourceNotFoundException {
+	public String findCountryCode(String postalCode) throws IOException, JSONException, ResourceNotFoundException, PostalCodeNotFoundException {
 		return jsonParsePostalCode(postalCode);
 	}
 
-	private String jsonParsePostalCode(String postalCode) throws IOException, JSONException, ResourceNotFoundException {
+	private String jsonParsePostalCode(String postalCode) throws IOException, JSONException, ResourceNotFoundException, PostalCodeNotFoundException {
 		 CountryCodes codes = new CountryCodes();
 		 String cuntryName = codes.getCountyName(postalCode);
 		return codes.getCountryCode(cuntryName);

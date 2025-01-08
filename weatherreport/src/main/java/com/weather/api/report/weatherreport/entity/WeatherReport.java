@@ -72,12 +72,12 @@ public class WeatherReport {
     @Column(updatable = false, name = "CREATED_AT")
     private Date createdAt;
     @Column(name = "ACTIVE")
-    private boolean isActive = false;
+    private Boolean isActive = false;
 
-	public boolean isActive() {
+	public Boolean isActive() {
 		return isActive;
 	}
-	public void setActive(boolean isActive) {
+	public void setActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
 	public String getUser() {
